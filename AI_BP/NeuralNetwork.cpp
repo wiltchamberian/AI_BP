@@ -96,7 +96,6 @@ std::vector<double> NeuralNetwork::Forward(std::vector<double>& x) {
 }
 
 void NeuralNetwork::Backward(std::vector<Sample>& xs, std::vector<Sample>& ys) {
-  //auto outputs = Forward(x);
   std::vector<Layer> nLayers(layers.size());
   for (int i = 0; i < nLayers.size(); ++i) {
     nLayers[i].weights.resize(layers[i].weights.size());
