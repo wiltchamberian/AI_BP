@@ -65,11 +65,11 @@ std::vector<std::vector<double>> NeuralNetwork::BP4(std::vector<double>& a, std:
 std::vector<double> NeuralNetwork::Forward(std::vector<double>& x) {
   a.resize(layers.size());
   for (int i = 0; i < layers.size(); ++i) {
-    a[i].resize(layers[i].data().size());
+    a[i].resize(layers[i].data().size(),0);
   }
   z.resize(layers.size());
   for (int i = 0; i < layers.size(); ++i) {
-    z[i].resize(layers[i].data().size());
+    z[i].resize(layers[i].data().size(),0);
   }
   
   for (int i = 0; i < layers.size(); ++i) {
@@ -85,7 +85,7 @@ std::vector<double> NeuralNetwork::Forward(std::vector<double>& x) {
       }
       else {
         for (int k = 0; k < a[i - 1].size(); ++k) {
-          z[i][j] += v[k] * z[i - 1][k];
+          z[i][j] += v[k] * a[i - 1][k];
         }
         z[i][j] += layers[i].b[j];
         a[i][j] = activation->activate(z[i][j]);
@@ -130,10 +130,38 @@ void NeuralNetwork::Backward(std::vector<Sample>& xs, std::vector<Sample>& ys) {
   //update weights;
   for (int i = 0; i < resultLayers.size(); ++i) {
     resultLayers[i] /= xs.size();
-    layers[i].Add(resultLayers[i],learningRate);
+    layers[i].ApplyGradient(resultLayers[i],learningRate);
   }
 
 }
+
+double NeuralNetwork::ComputeLoss(std::vector<Sample>& xs, std::vector<Sample>& ys) {
+  double totalLoss = 0.0;
+  for (int i = 0; i < xs.size(); ++i) {
+    std::vector<double> pred = Forward(xs[i]);
+    for (int j = 0; j < pred.size(); ++j) {
+      double diff = pred[j] - ys[i][j];
+      totalLoss += diff * diff;
+    }
+  }
+  return totalLoss / xs.size();
+}
+
+void NeuralNetwork::Train(std::vector<Sample>& xs, std::vector<Sample>& ys,
+  int maxEpochs, double tolerance) {
+  for (int epoch = 0; epoch < maxEpochs; ++epoch) {
+    Backward(xs, ys);
+    double loss = ComputeLoss(xs, ys);
+    std::cout << "Epoch " << epoch << " Loss: " << loss << std::endl;
+
+    if (loss < tolerance) {
+      std::cout << "Converged at epoch " << epoch << std::endl;
+      break;
+    }
+  }
+}
+
+
 
 void NeuralNetwork::Print() {
   for (int i = 0; i < layers.size(); ++i) {

@@ -36,6 +36,10 @@ public:
 
   void Backward(std::vector<Sample>& x, std::vector<Sample>& y);
 
+  double ComputeLoss(std::vector<Sample>& xs, std::vector<Sample>& ys);
+
+  void Train(std::vector<Sample>& xs, std::vector<Sample>& ys, int maxEpochs, double tolerance);
+
   void Print();
 
 protected:

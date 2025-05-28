@@ -4,7 +4,7 @@
 int main()
 {
   NeuralNetwork network(0.1);
-  network.SetActivation(std::make_shared<LinearActivation>());
+  network.SetActivation(std::make_shared<RELU>());
   Layer layer1(2, 2);
   layer1.weights[0][0] = 1;
   layer1.weights[0][1] = 1;
@@ -26,13 +26,8 @@ int main()
 
   std::vector<Sample> xs = { x,x2 };
   std::vector<Sample> ys = { y, y2 };
-  network.Backward(xs, ys);
-
-  network.Print();
-  network.Backward(xs, ys);
-  network.Print();
-
-  network.Backward(xs, ys);
+ 
+  network.Train(xs, ys, 100, 1e-4);
   network.Print();
 }
 

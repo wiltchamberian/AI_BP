@@ -1,11 +1,11 @@
 #include "Layer.h"
 
-void Layer::Add(Layer& other, double learningRate) {
+void Layer::ApplyGradient(Layer& other, double learningRate) {
   for (int i = 0; i < weights.size(); ++i) {
     for (int j = 0; j < weights[i].size(); ++j) {
-      weights[i][j] = weights[i][j] + other.weights[i][j] * learningRate;
+      weights[i][j] = weights[i][j] - other.weights[i][j] * learningRate;
     }
-    b[i] = b[i] + other.b[i] * learningRate;
+    b[i] = b[i] - other.b[i] * learningRate;
   }
 }
 

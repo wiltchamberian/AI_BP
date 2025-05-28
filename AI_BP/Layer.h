@@ -14,7 +14,7 @@ public:
     }
     b.resize(output, 0);
   }
-  void Add(Layer& other, double learningRate);
+  void ApplyGradient(Layer& other, double learningRate);
   friend Layer operator + (const Layer& l1, const Layer& l2);
   Layer& operator /= (int n);
   std::vector<std::vector<double>>& data() {
